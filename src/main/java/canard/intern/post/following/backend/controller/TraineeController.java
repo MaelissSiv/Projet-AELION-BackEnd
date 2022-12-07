@@ -4,7 +4,7 @@ import canard.intern.post.following.backend.DTO.TraineeDto;
 import canard.intern.post.following.backend.enums.Gender;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.server.ResponseStatusException;
 
 import javax.validation.Valid;
 import java.time.LocalDate;
@@ -71,13 +71,18 @@ public class TraineeController {
     }
 
     @PutMapping ("/{id}")
-    public void update (
+    public @Valid TraineeDto update (
             @PathVariable("id") int id,
             @Valid @RequestBody TraineeDto traineeDto
     ){
         if (Objects.nonNull(traineeDto.getId()) && (traineeDto.getId() != id)) {
-            throw new IllegalArgumentException ();
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                    String.format("ID <?> from path does not match id <?> from body",
+                            id, traineeDto.getId()));
+
+            // NB: you can use also: MessageFormat.format or StringBuilder
         }
+        return traineeDto;
     }
 
     @DeleteMapping("/{id}")
