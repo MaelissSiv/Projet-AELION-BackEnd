@@ -81,14 +81,15 @@ public class  TraineeController {
 //        return traineeDto;
 //    }
 @PutMapping("/{id}")
-public TraineeDto update(
-        @PathVariable("id") int id,
-        @Valid @RequestBody TraineeDto traineeDto){
+public TraineeDto update(@PathVariable("id") int id, @Valid @RequestBody TraineeDto traineeDto){
     var optTraineeDto =  traineeService.update(id, traineeDto);
     if (Objects.nonNull(traineeDto.getId()) && (traineeDto.getId() != id)) {
         throw new ResponseStatusException(HttpStatus.BAD_REQUEST, String.format("Id <%d> from path does not match id <%d> from body", id, traineeDto.getId()));
         // NB:you can use also:  MessageFormat.format or StringBuilder
+    }if (optTraineeDto.isEmpty()){
+        throw new ResponseStatusException(HttpStatus.NOT_FOUND, String.format("Id <%d> from path does not match id <%d> from body", id, traineeDto.getId()));
     }
+
     return optTraineeDto.get();
 }
 
