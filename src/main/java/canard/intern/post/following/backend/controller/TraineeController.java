@@ -26,6 +26,9 @@ public class  TraineeController {
      * GET /api/trainees
      * @return all trainees
      */
+
+
+
     @GetMapping
     public List<TraineeDto> getAll(){
        return traineeService.getAll();
@@ -50,12 +53,17 @@ public class  TraineeController {
         return optTraineeDto.get();
     }
 
+//    @PostMapping
+//    @ResponseStatus(HttpStatus.CREATED)
+//    public TraineeDto create(@Valid @RequestBody TraineeDto traineeDto) {
+//        return null;
+//    }
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public TraineeDto create(@Valid @RequestBody TraineeDto traineeDto) {
-        return null;
+        var traineeDto1 = traineeService.create(traineeDto);
+        return traineeDto1;
     }
-    return TraineeDto;
 
     @PutMapping("/{id}")
     public TraineeDto update(
