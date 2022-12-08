@@ -17,7 +17,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/trainees")
-public class TraineeController {
+public class  TraineeController {
 
     @Autowired
     private TraineeService traineeService;
@@ -55,6 +55,7 @@ public class TraineeController {
     public TraineeDto create(@Valid @RequestBody TraineeDto traineeDto) {
         return null;
     }
+    return TraineeDto;
 
     @PutMapping("/{id}")
     public TraineeDto update(
