@@ -69,12 +69,17 @@ public class  TraineeController {
 //    public TraineeDto create(@Valid @RequestBody TraineeDto traineeDto) {
 //        return null;
 //    }
+//    @PostMapping
+//    @ResponseStatus(HttpStatus.CREATED)
+//    public TraineeDto create(@Valid @RequestBody TraineeDto traineeDto) {
+//        return traineeService.create(traineeDto);
+//    }
+
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public TraineeDto create(@Valid @RequestBody TraineeDto traineeDto) {
-        return traineeService.create(traineeDto);
+        return traineeService.create(traineeDto) ;
     }
-
 //    @PutMapping("/{id}")
 //    public TraineeDto update(
 //            @PathVariable("id") int id,
@@ -111,4 +116,10 @@ public TraineeDto update(@PathVariable("id") int id, @Valid @RequestBody Trainee
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, String.format("No trainee found with id <%d>", id));
         }
     }
+
+//    @DeleteMapping("/{id}")
+//    @ResponseStatus(HttpStatus.NO_CONTENT)
+//    public void delete(@PathVariable("id") int id){
+//        traineeService.delete(id);
+//    }
 }

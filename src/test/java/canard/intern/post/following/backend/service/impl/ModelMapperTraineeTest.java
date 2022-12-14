@@ -58,4 +58,36 @@ public class ModelMapperTraineeTest {
         );
 
     }
+
+    @Test
+    void mapTraineeDtoEntity() {
+        Integer id = 1;
+        String lastname = "Bond";
+        String firstname = "James";
+        Gender gender = Gender.M;
+        String email = "james.bon@gmail.com";
+        String phonenumber = "0659874856";
+        LocalDate birthdate = LocalDate.of(1950, 1, 6);
+        var traineeDto = TraineeDto.builder()
+                .id(id)
+                .lastname(lastname)
+                .firstname(firstname)
+                .gender(gender)
+                .email(email)
+                .phoneNumber(phonenumber)
+                .birthdate(birthdate)
+                .build();
+        var trainee = modelMapper.map(traineeDto, Trainee.class);
+        assertNotNull(trainee);
+        assertSame(Trainee.class, trainee.getClass());
+        assertAll(
+                () -> assertEquals(id, trainee.getId(), "trainee id"),
+                () -> assertEquals(lastname, trainee.getLastname(), "trainee lastname"),
+                () -> assertEquals(firstname, trainee.getFirstname(), "trainee firstname"),
+                () -> assertEquals(gender, trainee.getGender(), "trainee gender"),
+                () -> assertEquals(email, trainee.getEmail(), "email gender"),
+                () -> assertEquals(phonenumber, trainee.getPhoneNumber(), "phonenumber gender"),
+                () -> assertEquals(birthdate, trainee.getBirthdate(), "birthdate gender")
+        );
+    }
 }

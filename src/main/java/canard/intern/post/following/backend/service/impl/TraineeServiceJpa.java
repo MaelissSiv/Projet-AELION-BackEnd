@@ -1,11 +1,15 @@
 package canard.intern.post.following.backend.service.impl;
 
 import canard.intern.post.following.backend.dto.TraineeDto;
+import canard.intern.post.following.backend.entity.Trainee;
+import canard.intern.post.following.backend.error.UpdateException;
 import canard.intern.post.following.backend.repository.TraineeRepository;
 import canard.intern.post.following.backend.service.TraineeService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
+import org.springframework.ui.ModelMap;
 
 import java.util.List;
 import java.util.Optional;
@@ -15,40 +19,101 @@ import java.util.Set;
 public class TraineeServiceJpa implements TraineeService {
 
     @Autowired
-    private TraineeRepository traineeRepository;
+    TraineeRepository traineeRepository;
+
     @Autowired
     private ModelMapper modelMapper;
     @Override
     public List<TraineeDto> getAll() {
-        //TODO: convert entities => DTO
-        return traineeRepository.findAll()
-                .stream()
-                .map(te -> modelMapper.map(te, TraineeDto.class))
-                .toList();
+//        return traineeRepository.findAll().stream().map(
+//                (t)->TraineeDto.builder()
+//                        .id(t.getId())
+//                        .lastname(t.getLastname())
+//                        .email(t.getEmail())
+//                        .firstname(t.getFirstname())
+//                        .gender(t.getGender())
+//                        .birthdate(t.getBirthdate())
+//                        .phoneNumber(t.getPhoneNumber())
+//                        .build()
+//
+//        ).toList();
+        return traineeRepository.findAll().stream().map((t)->modelMapper.map(t,TraineeDto.class)).toList();
     }
 
     @Override
     public Optional<TraineeDto> getById(int id) {
-        return Optional.empty();
+        // on récup la un optional de Trainee
+
+
+        return traineeRepository.findById(id)
+                .map((te)-> modelMapper.map(te, TraineeDto.class));//transfo que si y'a kkchose dans la boite
+
+
+
+//        if (opTrainee.isPresent()){
+//            // On convertit le Trainee en traineeDto s'il est pas vide
+//            var traineeDto= modelMapper.map(opTrainee.get(),TraineeDto.class);
+//
+//            return Optional.of(traineeDto);
+//        }
+//        else{
+//            return Optional.empty();
+//        }
     }
 
     @Override
     public Set<TraineeDto> getByLastnameContaining(String lastnamePartial) {
+
         return null;
     }
 
     @Override
     public TraineeDto create(TraineeDto traineeDto) {
-        return null;
+        // transformer traineeDto en trainee (grace au modelMapper)
+        // le sauver dans la base de donnée grace au traineeRepository.save
+        // récupérer le trainee renvoyé par traineeRepository.save et le convertir en TraineeDto
+        Trainee traineeDb;
+        try {
+            traineeDb= traineeRepository.save(modelMapper.map(traineeDto, Trainee.class));
+        }catch(Exception e){
+            throw (new UpdateException("trainee couldn't be saved",e));
+        }
+
+        return modelMapper.map(traineeDb, TraineeDto.class);
     }
 
     @Override
     public Optional<TraineeDto> update(int id, TraineeDto traineeDto) {
-        return Optional.empty();
+        traineeDto.setId(id);
+        var optTraineeDb = traineeRepository.findById(id) ;
+        try {
+            if (optTraineeDb.isPresent()) {
+                var traineeDb= optTraineeDb.get();
+                modelMapper.map(traineeDto, traineeDb); // change traineeDb in hibernate cache
+                traineeRepository.flush(); // synchro et force l'update en sql
+                return Optional.of(modelMapper.map(traineeDb, TraineeDto.class));
+            }else{
+                return Optional.empty();
+            }
+        }catch(Exception e){
+            throw new UpdateException("trainee couldn't be updated",e);
+        }
+
+
     }
 
     @Override
     public boolean delete(int id) {
-        return false;
+        try {
+            if (traineeRepository.findById(id).isPresent()) {
+                traineeRepository.deleteById(id);
+                return true;
+            } else {
+                return false;
+            }
+        }catch(Exception e){// autres problèmes
+            throw (new UpdateException("Trainee couldn't be deleted",e));
+            //return false;
+        }
     }
 }
