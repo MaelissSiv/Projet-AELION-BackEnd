@@ -1,9 +1,10 @@
-package canard.intern.post.following.backend.jpa.repository;
+package canard.intern.post.following.backend.repository;
 
 import canard.intern.post.following.backend.entity.Trainee;
 import canard.intern.post.following.backend.enums.Gender;
 import canard.intern.post.following.backend.repository.TraineeRepository;
 import org.checkerframework.checker.units.qual.A;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
@@ -11,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.test.annotation.Rollback;
+import org.springframework.test.context.ActiveProfiles;
 
 import javax.persistence.EntityManager;
 import java.time.LocalDate;
@@ -19,6 +21,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 @DataJpaTest
+@ActiveProfiles("testu")
 public class TraineeRepositoryTest {
 
     @Autowired
@@ -56,7 +59,7 @@ public class TraineeRepositoryTest {
         //traineeRepository.save(trainee);
         traineeRepository.saveAndFlush(trainee);
 
-        assertNotNull(trainee.getId());
+        Assertions.assertNotNull(trainee.getId());
 
         //(optional) verify 2: read data from db to check if data has been inserted
 
@@ -100,7 +103,7 @@ public class TraineeRepositoryTest {
         System.out.println(traineesRead);
 
         //verify: all data has been read( size and content)
-        assertEquals(traineesDatabase.size(), traineesRead.size());
+        Assertions.assertEquals(traineesDatabase.size(), traineesRead.size());
 
         //TODO: check content
     }
@@ -125,7 +128,7 @@ public class TraineeRepositoryTest {
         var opTrainee= traineeRepository.findById(id);
 
         // verify
-        assertTrue(opTrainee.isPresent(), "trainee is present");
+        Assertions.assertTrue(opTrainee.isPresent(), "trainee is present");
 
     }
     @Test
@@ -137,7 +140,7 @@ public class TraineeRepositoryTest {
         var opTrainee= traineeRepository.findById(id);
 
         // verify
-        assertTrue(opTrainee.isEmpty());
+        Assertions.assertTrue(opTrainee.isEmpty());
 
 
     }

@@ -7,7 +7,7 @@ import lombok.*;
 import javax.persistence.*;
 import java.time.LocalDate;
 
-@ToString
+@ToString(exclude = "poe")
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
@@ -38,4 +38,10 @@ public class Trainee {
 
     @Column(length = 100, nullable = false, unique = true)
     private String email;
+
+    //@Transient // do not persist this attribute
+    @ManyToOne //(fetch = FetchType.LAZY)
+    //@JoinColumn(name= "id_poe")
+    private Poe poe;
+
 }

@@ -29,4 +29,6 @@ public class Poe {
 
     @Column(name = "end_date",nullable = false)
     private LocalDate endDate;
+
+    // private <Trainee> trainees;
 }
