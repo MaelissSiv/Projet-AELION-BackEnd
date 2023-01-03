@@ -1,5 +1,6 @@
 package canard.intern.post.following.backend.service;
 
+import canard.intern.post.following.backend.dto.PoeDetailDto;
 import canard.intern.post.following.backend.dto.PoeDto;
 import canard.intern.post.following.backend.error.UpdateException;
 
@@ -18,13 +19,14 @@ public interface PoeService {
      * @return optional with trainee found
      * or optional empty if not exists
      */
-    Optional<PoeDto> getById(int id);
+    Optional<PoeDetailDto> getById(int id);
 
     /** get trainees with lastname containing lastnamePartial,
      * ignoring case
      * @param lastnamePartial
      * @return set of trainees matching
      */
+
 
     /** create trainee and generate an id
      * @param poeDto trainee to create (without id)

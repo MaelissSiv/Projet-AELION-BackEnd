@@ -1,5 +1,6 @@
 package canard.intern.post.following.backend.service;
 
+import canard.intern.post.following.backend.dto.TraineeDetailDto;
 import canard.intern.post.following.backend.dto.TraineeDto;
 import canard.intern.post.following.backend.error.UpdateException;
 
@@ -57,4 +58,13 @@ public interface TraineeService {
      */
     boolean delete(int id);
 
+    /**
+     *
+     * @param idTrainee
+     * @param idPoe
+     * @return trainee with details
+     * @throws
+     */
+
+    Optional<TraineeDetailDto> setPoe(int idTrainee, int idPoe);
 }

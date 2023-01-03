@@ -23,17 +23,17 @@ public interface PoeRepository extends JpaRepository<Poe,Integer> {
     @Query("SELECT p FROM Poe p WHERE EXTRACT (YEAR FROM p.beginDate) = :year ORDER BY p.beginDate")
     List<Poe> findByBeginDateInYear(int year);
 
-    @Query("SELECT new canard.intern.post.following.backend.enums.PoeType" +
+    @Query("SELECT new canard.intern.post.following.backend.dto.PoeTypeCountPoeDto" +
             "(p.poeType, COUNT(p)) FROM Poe p GROUP BY p.poeType")
     List<PoeTypeCountPoeDto> countPoeByPoeType ();
 
-    @Query("SELECT p.poeType as poeType, COUNT(p) as countPoe " + "FROM Poe p GROUP BY p.porType")
+    @Query("SELECT p.poeType as poeType, COUNT(p) as countPoe " + "FROM Poe p GROUP BY p.poeType")
     List<IPoeTypeCountPoeDto> countPoeByPoeType2();
 
-    @Query("SELECT FROM p, COUNT (t.id) as traineeCount" +
-            "FROM Poe p LEFT OUTER JOIN Trainee t" +
-            " GROUP BY p" +
-            "ORDER BY traineeCount")
+    @Query("SELECT p as poe, COUNT (t.id) as traineeCount " +
+            "FROM Trainee t RIGHT OUTER JOIN t.poe p " +
+            "GROUP BY p " +
+            "ORDER BY traineeCount ")
     List<Tuple> countTraineesByPoe();
 
 }

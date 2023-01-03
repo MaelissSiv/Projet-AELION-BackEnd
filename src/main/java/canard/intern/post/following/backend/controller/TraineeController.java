@@ -1,5 +1,6 @@
 package canard.intern.post.following.backend.controller;
 
+import canard.intern.post.following.backend.dto.TraineeDetailDto;
 import canard.intern.post.following.backend.dto.TraineeDto;
 import canard.intern.post.following.backend.enums.Gender;
 import canard.intern.post.following.backend.service.TraineeService;
@@ -21,7 +22,7 @@ import java.util.Set;
 public class  TraineeController {
 
 
-    @Autowired
+    @Autowired //cablage automatique = injection de dépendances, evite les new traineeservice etc
     private TraineeService traineeService;
 
     /**
@@ -107,6 +108,19 @@ public TraineeDto update(@PathVariable("id") int id, @Valid @RequestBody Trainee
     return optTraineeDto.get();
 }
 
+    @PatchMapping("/{idTrainee}/setPoe/{idPoe}")
+    public TraineeDetailDto setPoe(
+            @PathVariable("idTrainee") int idTrainee,
+            @PathVariable("idPoe") int idPoe)
+    {
+        return traineeService.setPoe(idTrainee, idPoe)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
+            String.format("Trainee not found with id <%d> or poe not found with id <%d>",
+                    idTrainee, idPoe)));
+    }
+
+    //TODO: setNullPoe
+
     //NB: other choice, return Dto removed if found
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
@@ -122,4 +136,5 @@ public TraineeDto update(@PathVariable("id") int id, @Valid @RequestBody Trainee
 //    public void delete(@PathVariable("id") int id){
 //        traineeService.delete(id);
 //    }
+
 }

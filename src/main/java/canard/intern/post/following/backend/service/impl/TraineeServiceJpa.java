@@ -1,8 +1,10 @@
 package canard.intern.post.following.backend.service.impl;
 
+import canard.intern.post.following.backend.dto.TraineeDetailDto;
 import canard.intern.post.following.backend.dto.TraineeDto;
 import canard.intern.post.following.backend.entity.Trainee;
 import canard.intern.post.following.backend.error.UpdateException;
+import canard.intern.post.following.backend.repository.PoeRepository;
 import canard.intern.post.following.backend.repository.TraineeRepository;
 import canard.intern.post.following.backend.service.TraineeService;
 import org.modelmapper.ModelMapper;
@@ -22,6 +24,9 @@ public class TraineeServiceJpa implements TraineeService {
     TraineeRepository traineeRepository;
 
     @Autowired
+    private PoeRepository poeRepository;
+
+    @Autowired
     private ModelMapper modelMapper;
     @Override
     public List<TraineeDto> getAll() {
@@ -37,6 +42,8 @@ public class TraineeServiceJpa implements TraineeService {
 //                        .build()
 //
 //        ).toList();
+
+        // pour chaque objet "entity" Trainee je le transforme en objet TraineeDTO et je retourne une liste
         return traineeRepository.findAll().stream().map((t)->modelMapper.map(t,TraineeDto.class)).toList();
     }
 
@@ -115,5 +122,18 @@ public class TraineeServiceJpa implements TraineeService {
             throw (new UpdateException("Trainee couldn't be deleted",e));
             //return false;
         }
+    }
+
+    @Override
+    public Optional<TraineeDetailDto> setPoe(int idTrainee, int idPoe) {
+        return traineeRepository.findById(idTrainee)
+                .flatMap(traineeEntity -> poeRepository.findById(idPoe)
+                        .map(poeEntity -> {
+                            traineeEntity.setPoe(poeEntity);
+                            traineeRepository.flush();
+                            return modelMapper.map(traineeEntity,TraineeDetailDto.class);
+
+                        }));
+
     }
 }

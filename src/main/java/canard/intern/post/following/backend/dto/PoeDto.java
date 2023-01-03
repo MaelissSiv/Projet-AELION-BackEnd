@@ -5,27 +5,27 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
+
 import java.time.LocalDate;
 
+/**
+ * Objet qui represente une formation POE
+ */
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
-@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
+@SuperBuilder
 public class PoeDto {
-
 
     private Integer id;
 
-
     private String title;
-
 
     private String poeType;
 
-
     private LocalDate beginDate;
-
 
     private LocalDate endDate;
 }

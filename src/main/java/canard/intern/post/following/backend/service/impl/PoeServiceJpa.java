@@ -1,10 +1,13 @@
 package canard.intern.post.following.backend.service.impl;
 
+import canard.intern.post.following.backend.dto.PoeDetailDto;
 import canard.intern.post.following.backend.dto.PoeDto;
+import canard.intern.post.following.backend.dto.TraineeDto;
 import canard.intern.post.following.backend.entity.Poe;
 import canard.intern.post.following.backend.error.UpdateException;
 
 import canard.intern.post.following.backend.repository.PoeRepository;
+import canard.intern.post.following.backend.repository.TraineeRepository;
 import canard.intern.post.following.backend.service.PoeService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,13 +17,21 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 
-
+/**
+ * Implementation de l'interface Poeservice = c'est ici qu'on ecrit le code de l'interface
+ * CLasse qui met a disposition tous les services de recuperation et mise à jour des données de formation POE
+ */
 @Service
 public class PoeServiceJpa implements PoeService {
 
+    // On cree un objet de la classe PoeRepository afin de faire des actions de consultation/modification des données en base de données
     @Autowired
     private PoeRepository poeRepository;
 
+    // implementation d'un objet de lecture/ecriture en base de données des informations des stagiaires
+    private TraineeRepository traineeRepository;
+
+    // objet qui va permettre de convertir des objets de la base de données en objet de DTO
     @Autowired
     private ModelMapper modelMapper;
 
@@ -44,22 +55,39 @@ public class PoeServiceJpa implements PoeService {
     }
 
     @Override
-    public Optional<PoeDto> getById(int id) {
+    public Optional<PoeDetailDto> getById(int id) {
         var optPoe = poeRepository.findById(id);
-        PoeDto poeDto ;
         if (optPoe.isPresent()){
-            poeDto= modelMapper.map(optPoe.get(),PoeDto.class);
-            return Optional.of(poeDto);
+            var trainees = traineeRepository.findByPoeId(id)
+                    .stream()
+                    .map(traineeEntity -> modelMapper.map(traineeEntity, TraineeDto.class))
+                    .toList();
+            var poeDDto= modelMapper.map(optPoe.get(),PoeDetailDto.class);
+            poeDDto.setTrainees(trainees);
+            return Optional.of(poeDDto);
         }
         else{
             return Optional.empty();
         }
+    }
+//    @Override
+//    public Optional<PoeDetailDto> getById(int id) {
+//        var optPoe = poeRepository.findById(id);
+//        PoeDetailDto poeDto ;
+//        if (optPoe.isPresent()){
+//            poeDto= modelMapper.map(optPoe.get(),PoeDetailDto.class);
+//            return Optional.of(poeDto);
+//        }
+//        else{
+//            return Optional.empty();
+//        }
+//    }
 
         //        return traineeRepository.findById(id)
         //                .map((te)-> modelMapper.map(te,
         //                TraineeDto.class));//
         //                transfo que si y'a kkchose dans la boite
-    }
+
 
     @Override
     public PoeDto create(PoeDto poeDto) {

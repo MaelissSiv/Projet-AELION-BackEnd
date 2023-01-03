@@ -7,7 +7,7 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter @Setter
-public class PoeTypeCountPoeDto {
+public class PoeTypeCountPoeDto implements IPoeTypeCountPoeDto {
     private String poeType;
     private long countPoe;
 }
